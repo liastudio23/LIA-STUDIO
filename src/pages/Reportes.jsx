@@ -5,147 +5,152 @@ function Reportes() {
   const [proyectos, setProyectos] = useState([]);
   const [pagos, setPagos] = useState([]);
   const [gastos, setGastos] = useState([]);
+  const [pagosPersonal, setPagosPersonal] =
+    useState([]);
 
   useEffect(() => {
-  cargarReportes();
-  cargarPagos();
-  cargarGastos();
-}, []);
+    cargarReportes();
+    cargarPagos();
+    cargarGastos();
+    cargarPagosPersonal();
+  }, []);
 
-  
+  const cargarReportes = async () => {
+    const { data } = await supabase
+      .from("proyectos")
+      .select("*")
+      .order("nombre");
 
- const cargarReportes = async () => {
-  const { data } = await supabase
-    .from("proyectos")
-    .select("*")
-    .order("nombre");
+    setProyectos(data || []);
+  };
 
-  setProyectos(data || []);
-};
+  const cargarPagos = async () => {
+    const { data } = await supabase
+      .from("pagos")
+      .select("*");
 
-const cargarPagos = async () => {
-  const { data } = await supabase
-    .from("pagos")
-    .select("*");
+    setPagos(data || []);
+  };
 
-  setPagos(data || []);
-};
+  const cargarGastos = async () => {
+    const { data } = await supabase
+      .from("gastos")
+      .select("*");
 
-const cargarGastos = async () => {
-  const { data } = await supabase
-    .from("gastos")
-    .select("*");
+    setGastos(data || []);
+  };
 
-  setGastos(data || []);
-};
+  const cargarPagosPersonal = async () => {
+    const { data } = await supabase
+      .from("pagos_personal")
+      .select("*");
 
+    setPagosPersonal(data || []);
+  };
 
   return (
     <div>
       <h1>📄 Reportes</h1>
-    <hr />
 
-<table>
-  <thead>
-    <tr>
-    <th>Proyecto</th>
-    <th>Ingresos</th>
-    <th>Gastos</th>
-    <th>Utilidad</th>
+      <hr />
 
-    </tr>
-  </thead>
+      <table>
+        <thead>
+          <tr>
+            <th>Proyecto</th>
+            <th>Ingresos</th>
+            <th>Gastos</th>
+            <th>Personal</th>
+            <th>Utilidad</th>
+          </tr>
+        </thead>
 
-  <tbody>
-    {proyectos.map((proyecto) => (
-      <tr key={proyecto.id}>
-       <td>{proyecto.nombre}</td>
+        <tbody>
+          {proyectos.map((proyecto) => {
+            const ingresos = pagos
+              .filter(
+                (pago) =>
+                  pago.proyecto_id ===
+                  proyecto.id
+              )
+              .reduce(
+                (acc, pago) =>
+                  acc +
+                  Number(pago.monto),
+                0
+              );
 
-<td>
-  S/ {pagos
-    .filter(
-      (pago) =>
-        pago.proyecto_id === proyecto.id
-    )
-    .reduce(
-      (acc, pago) =>
-        acc + Number(pago.monto),
-      0
-    )}
-</td>
+            const gastosProyecto =
+              gastos
+                .filter(
+                  (gasto) =>
+                    gasto.proyecto_id ===
+                    proyecto.id
+                )
+                .reduce(
+                  (acc, gasto) =>
+                    acc +
+                    Number(gasto.monto),
+                  0
+                );
 
-<td>
-  S/ {gastos
-    .filter(
-      (gasto) =>
-        gasto.proyecto_id === proyecto.id
-    )
-    .reduce(
-      (acc, gasto) =>
-        acc + Number(gasto.monto),
-      0
-    )}
-</td>
+            const gastosPersonal =
+              pagosPersonal
+                .filter(
+                  (pagoPersonal) =>
+                    pagoPersonal.proyecto_id ===
+                    proyecto.id
+                )
+                .reduce(
+                  (
+                    acc,
+                    pagoPersonal
+                  ) =>
+                    acc +
+                    Number(
+                      pagoPersonal.monto
+                    ),
+                  0
+                );
 
-<td
-  style={{
-    color:
-      (
-        pagos
-          .filter(
-            (pago) =>
-              pago.proyecto_id === proyecto.id
-          )
-          .reduce(
-            (acc, pago) =>
-              acc + Number(pago.monto),
-            0
-          )
-        -
-        gastos
-          .filter(
-            (gasto) =>
-              gasto.proyecto_id === proyecto.id
-          )
-          .reduce(
-            (acc, gasto) =>
-              acc + Number(gasto.monto),
-            0
-          )
-      ) >= 0
-        ? "#22c55e"
-        : "#ef4444",
-  }}
->
-  S/ {
-    pagos
-      .filter(
-        (pago) =>
-          pago.proyecto_id === proyecto.id
-      )
-      .reduce(
-        (acc, pago) =>
-          acc + Number(pago.monto),
-        0
-      )
-    -
-    gastos
-      .filter(
-        (gasto) =>
-          gasto.proyecto_id === proyecto.id
-      )
-      .reduce(
-        (acc, gasto) =>
-          acc + Number(gasto.monto),
-        0
-      )
-  }
-</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-      
+            const utilidad =
+              ingresos -
+              gastosProyecto -
+              gastosPersonal;
+
+            return (
+              <tr key={proyecto.id}>
+                <td>
+                  {proyecto.nombre}
+                </td>
+
+                <td>
+                  S/ {ingresos}
+                </td>
+
+                <td>
+                  S/ {gastosProyecto}
+                </td>
+
+                <td>
+                  S/ {gastosPersonal}
+                </td>
+
+                <td
+                  style={{
+                    color:
+                      utilidad >= 0
+                        ? "#22c55e"
+                        : "#ef4444",
+                  }}
+                >
+                  S/ {utilidad}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
