@@ -203,12 +203,29 @@ function PagosPersonal() {
       <br />
       <br />
 
-      <input
-        type="text"
-        placeholder="Estado"
-        value={estado}
-        onChange={(e) => setEstado(e.target.value)}
-      />
+      <select
+  value={estado}
+  onChange={(e) =>
+    setEstado(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione estado
+  </option>
+
+  <option value="Pagado">
+    ✅ Pagado
+  </option>
+
+  <option value="Pendiente">
+    🟡 Pendiente
+  </option>
+
+  <option value="Parcial">
+    🔵 Parcial
+  </option>
+</select>
+      
 
       <br />
       <br />
