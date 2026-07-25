@@ -14,6 +14,8 @@ function Proyectos() {
   const [clientes, setClientes] = useState([]);
   const [clienteId, setClienteId] = useState("");
   const [proyectos, setProyectos] = useState([]);
+  const [pagos, setPagos] =
+  useState([]);
 
   const cargarClientes = async () => {
     const { data } = await supabase
@@ -33,9 +35,18 @@ function Proyectos() {
     setProyectos(data || []);
   };
 
+const cargarPagos = async () => {
+  const { data } = await supabase
+    .from("pagos")
+    .select("*");
+
+  setPagos(data || []);
+};
+
   useEffect(() => {
     cargarClientes();
     cargarProyectos();
+    cargarPagos();
   }, []);
 
   const limpiarFormulario = () => {
@@ -140,6 +151,31 @@ function Proyectos() {
 
     cargarProyectos();
   };
+
+  const obtenerPagado = (proyectoId) => {
+  return pagos
+    .filter(
+      (pago) =>
+        Number(pago.proyecto_id) ===
+        Number(proyectoId)
+    )
+    .reduce(
+      (total, pago) =>
+        total + Number(pago.monto),
+      0
+    );
+};
+
+const obtenerSaldo = (
+  precio,
+  proyectoId
+) => {
+  return (
+    Number(precio) -
+    obtenerPagado(proyectoId)
+  );
+};
+
 
   return (
     <div>
@@ -317,6 +353,9 @@ function Proyectos() {
             <th>Proyecto</th>
             <th>Servicio</th>
             <th>Precio</th>
+            <th>Pagado</th>
+            <th>Saldo</th>
+            <th>Financiero</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -338,9 +377,49 @@ function Proyectos() {
               </td>
 
               <td>{proyecto.nombre}</td>
-              <td>{proyecto.servicio}</td>
-              <td>S/ {proyecto.precio}</td>
-              <td>{proyecto.estado}</td>
+
+<td>{proyecto.servicio}</td>
+
+<td>S/ {proyecto.precio}</td>
+
+<td>
+  S/ {obtenerPagado(proyecto.id)}
+</td>
+
+<td>
+  S/{" "}
+  {obtenerSaldo(
+    proyecto.precio,
+    proyecto.id
+  )}
+</td>
+
+<td>
+  {obtenerSaldo(
+    proyecto.precio,
+    proyecto.id
+  ) <= 0 ? (
+    <span
+      style={{
+        color: "#22c55e",
+        fontWeight: "bold",
+      }}
+    >
+      ✅ Pagado
+    </span>
+  ) : (
+    <span
+      style={{
+        color: "#facc15",
+        fontWeight: "bold",
+      }}
+    >
+      🟡 Pendiente
+    </span>
+  )}
+</td>
+
+<td>{proyecto.estado}</td>
 
               <td>
                 <button
