@@ -130,14 +130,54 @@ function PagosPersonal() {
       <br />
       <br />
 
-      <input
-        type="text"
-        placeholder="Especialidad"
-        value={especialidad}
-        onChange={(e) =>
-          setEspecialidad(e.target.value)
-        }
-      />
+      <select
+  value={especialidad}
+  onChange={(e) =>
+    setEspecialidad(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione especialidad
+  </option>
+
+  <option value="Editor">
+    🎬 Editor
+  </option>
+
+  <option value="Camarografo">
+    📹 Camarógrafo
+  </option>
+
+  <option value="Fotografo">
+    📸 Fotógrafo
+  </option>
+
+  <option value="Drone">
+    🚁 Piloto de Drone
+  </option>
+
+  <option value="Sonidista">
+    🎤 Sonidista
+  </option>
+
+  <option value="Disenador">
+    🎨 Diseñador
+  </option>
+
+  <option value="Colorista">
+    🎞️ Colorista
+  </option>
+
+  <option value="Productor">
+    📋 Productor
+  </option>
+
+  <option value="Asistente">
+    👨‍💼 Asistente
+  </option>
+</select>
+      
+  
 
       <br />
       <br />
@@ -221,7 +261,26 @@ function PagosPersonal() {
               <td>{pago.especialidad}</td>
               <td>S/ {pago.monto}</td>
               <td>{pago.fecha_pago}</td>
-              <td>{pago.estado}</td>
+              <td>{pago.estado === "Pagado" ? (
+              <span
+              style={{
+              color: "#22c55e",
+             fontWeight: "bold",
+      }}
+    >
+      ✅ Pagado
+    </span>
+  ) : (
+    <span
+      style={{
+        color: "#facc15",
+        fontWeight: "bold",
+      }}
+    >
+      🟡 Pendiente
+    </span>
+  )}
+</td>
 
               <td>
                 <button
