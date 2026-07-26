@@ -55,6 +55,11 @@ function Navbar({ setPagina }) {
         <li onClick={() => setPagina("reportes")}>
           📄 Reportes
         </li>
+
+        <li onClick={() => setPagina("personal")}>
+          👥 Personal
+        </li>
+
       </ul>
     </div>
   );

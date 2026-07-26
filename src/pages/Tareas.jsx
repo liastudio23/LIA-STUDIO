@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 function Tareas() {
   const [proyectos, setProyectos] = useState([]);
   const [tareas, setTareas] = useState([]);
+  const [personal, setPersonal] = useState([]);
 
   const [proyectoId, setProyectoId] = useState("");
   const [tarea, setTarea] = useState("");
@@ -22,6 +23,7 @@ function Tareas() {
       {
         proyecto_id: proyectoId,
         titulo: tarea,
+        responsable,
         prioridad,
         estado,
         fecha_limite: fechaLimite,
@@ -79,20 +81,31 @@ const eliminarTarea = async (id) => {
 };
 
   const cargarProyectos = async () => {
-    const { data } = await supabase
-      .from("proyectos")
-      .select("*")
-      .order("nombre");
+  const { data } = await supabase
+    .from("proyectos")
+    .select("*")
+    .order("nombre");
 
-    setProyectos(data || []);
-  };
+  setProyectos(data || []);
+};
+
+  const cargarPersonal = async () => {
+  const { data } = await supabase
+    .from("personal")
+    .select("*")
+    .eq("estado", "Activo")
+    .order("nombre");
+
+  setPersonal(data || []);
+};
 
   useEffect(() => {
   cargarProyectos();
   cargarTareas();
+  cargarPersonal();
 }, []);
 
-const cargarTareas = async () => {
+  const cargarTareas = async () => {
   const { data } = await supabase
     .from("tareas")
     .select("*")
@@ -136,14 +149,30 @@ const cargarTareas = async () => {
 />
 
  <br />
-<br />
+ <br />
 
-<input
-  type="text"
-  placeholder="Prioridad"
+<select
   value={prioridad}
-  onChange={(e) => setPrioridad(e.target.value)}
-/>
+  onChange={(e) =>
+    setPrioridad(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione prioridad
+  </option>
+
+  <option value="Alta">
+    🔴 Alta
+  </option>
+
+  <option value="Media">
+    🟡 Media
+  </option>
+
+  <option value="Baja">
+    🟢 Baja
+  </option>
+</select>
 
 <br />
 <br />
@@ -157,12 +186,25 @@ const cargarTareas = async () => {
 <br />
 <br />
 
-<input
-  type="text"
-  placeholder="Responsable"
+<select
   value={responsable}
-  onChange={(e) => setResponsable(e.target.value)}
-/>
+  onChange={(e) =>
+    setResponsable(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione responsable
+  </option>
+
+  {personal.map((persona) => (
+    <option
+      key={persona.id}
+      value={persona.nombre}
+    >
+      {persona.nombre}
+    </option>
+  ))}
+</select>
 
 <br />
 <br />
@@ -176,12 +218,28 @@ const cargarTareas = async () => {
 <br />
 <br />
 
-<input
-  type="text"
-  placeholder="Estado"
+<select
   value={estado}
-  onChange={(e) => setEstado(e.target.value)}
-/>
+  onChange={(e) =>
+    setEstado(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione estado
+  </option>
+
+  <option value="Pendiente">
+    ⏳ Pendiente
+  </option>
+
+  <option value="Proceso">
+    🔄 Proceso
+  </option>
+
+  <option value="Finalizado">
+    ✅ Finalizado
+  </option>
+</select>
 
 <br />
 <br />
@@ -197,14 +255,13 @@ const cargarTareas = async () => {
 <table>
   <thead>
     <tr>
-      <th>Proyecto</th>
-      <th>Tarea</th>
-      <th>Prioridad</th>
-      <th>Estado</th>
-      <th>Fecha Límite</th>
-
-
-      <th>Acciones</th>
+     <th>Proyecto</th>
+     <th>Tarea</th>
+     <th>Responsable</th>
+     <th>Prioridad</th>
+     <th>Estado</th>
+     <th>Fecha Límite</th>
+     <th>Acciones</th>
     </tr>
   </thead>
 
@@ -221,6 +278,7 @@ const cargarTareas = async () => {
         </td>
 
         <td>{item.titulo}</td>
+        <td>{item.responsable}</td>
         <td>{item.prioridad}</td>
         <td>{item.estado}</td>
         <td>{item.fecha_limite}</td>
