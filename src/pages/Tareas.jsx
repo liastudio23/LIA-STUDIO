@@ -79,7 +79,24 @@ const eliminarTarea = async (id) => {
 
   cargarTareas();
 };
+  const cambiarEstadoTarea = async (
+  id,
+  nuevoEstado
+) => {
+  const { error } = await supabase
+    .from("tareas")
+    .update({
+      estado: nuevoEstado,
+    })
+    .eq("id", id);
 
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  cargarTareas();
+};
   const cargarProyectos = async () => {
   const { data } = await supabase
     .from("proyectos")
@@ -280,15 +297,51 @@ const eliminarTarea = async (id) => {
         <td>{item.titulo}</td>
         <td>{item.responsable}</td>
         <td>{item.prioridad}</td>
-        <td>{item.estado}</td>
+        <td>
+  {item.estado === "Pendiente" &&
+    "🟡 Pendiente"}
+
+  {item.estado === "Proceso" &&
+    "🔵 Proceso"}
+
+  {item.estado === "Terminado" &&
+    "✅ Terminado"}
+</td>
         <td>{item.fecha_limite}</td>
 
- <td>
+<td>
+  {item.estado === "Pendiente" && (
+    <button
+      onClick={() =>
+        cambiarEstadoTarea(
+          item.id,
+          "Proceso"
+        )
+      }
+      style={{ marginRight: "5px" }}
+    >
+      ▶️
+    </button>
+  )}
+
+  {item.estado === "Proceso" && (
+    <button
+      onClick={() =>
+        cambiarEstadoTarea(
+          item.id,
+          "Terminado"
+        )
+      }
+      style={{ marginRight: "5px" }}
+    >
+      ✅
+    </button>
+  )}
+
   <button
-    onClick={() => {
-      console.log("CLICK BOTON", item.id);
-      eliminarTarea(item.id);
-    }}
+    onClick={() =>
+      eliminarTarea(item.id)
+    }
   >
     🗑️
   </button>

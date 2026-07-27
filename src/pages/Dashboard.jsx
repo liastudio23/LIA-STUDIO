@@ -11,6 +11,9 @@ function Dashboard() {
 
   const [bancos, setBancos] = useState(0);
   const [tareas, setTareas] = useState(0);
+  const [pendientes, setPendientes] = useState(0);
+  const [proceso, setProceso] = useState(0);
+  const [terminadas, setTerminadas] = useState(0);
   const [agenda, setAgenda] = useState(0);
   const [deudaPendiente, setDeudaPendiente] =
     useState(0);
@@ -37,17 +40,14 @@ function Dashboard() {
         });
 
     const { data: bancosData } =
-  await supabase
-    .from("bancos")
-    .select("*");
+      await supabase
+        .from("bancos")
+        .select("*");
 
-    const { count: totalTareas } =
+    const { data: tareasData } =
       await supabase
         .from("tareas")
-        .select("*", {
-          count: "exact",
-          head: true,
-        });
+        .select("*");
 
     const { count: totalAgenda } =
       await supabase
@@ -69,8 +69,8 @@ function Dashboard() {
 
     const { data: personalData } =
       await supabase
-         .from("pagos_personal")
-         .select("monto, estado");
+        .from("pagos_personal")
+        .select("monto, estado");
 
 
     const { data: serviciosData } =
@@ -99,46 +99,66 @@ function Dashboard() {
         0
       ) || 0;
 
-      console.log("PERSONAL:", personalData);
-      console.log(
-  "ESTADOS PERSONAL:",
-  personalData?.map(
-    (item) => item.estado
-  )
-);
+    console.log("PERSONAL:", personalData);
+    console.log(
+      "ESTADOS PERSONAL:",
+      personalData?.map(
+        (item) => item.estado
+      )
+    );
 
     const totalPersonal =
       personalData
-      ?.filter(
-      (item) =>
-        item.estado === "Pagado"
-      
-    )
-    .reduce(
-      (acc, item) =>
-        acc + Number(item.monto),
-      0
-    ) || 0;
+        ?.filter(
+          (item) =>
+            item.estado === "Pagado"
+
+        )
+        .reduce(
+          (acc, item) =>
+            acc + Number(item.monto),
+          0
+        ) || 0;
 
     const totalServicios =
-  serviciosData
-    ?.filter(
-      (item) =>
-        item.estado === "Pagado"
-    )
-    .reduce(
-      (acc, item) =>
-        acc + Number(item.monto),
-      0
-    ) || 0;
+      serviciosData
+        ?.filter(
+          (item) =>
+            item.estado === "Pagado"
+        )
+        .reduce(
+          (acc, item) =>
+            acc + Number(item.monto),
+          0
+        ) || 0;
 
     const totalBancos =
-  bancosData?.reduce(
-    (acc, item) =>
-      acc + Number(item.saldo_actual),
-    0
-  ) || 0;
+      bancosData?.reduce(
+        (acc, item) =>
+          acc + Number(item.saldo_actual),
+        0
+      ) || 0;
+    const tareasPendientes =
+      tareasData?.filter(
+        (item) => item.estado === "Pendiente"
+      ).length || 0;
 
+    const tareasProceso =
+      tareasData?.filter(
+        (item) => item.estado === "Proceso"
+      ).length || 0;
+
+    const tareasTerminadas =
+      tareasData?.filter(
+        (item) => item.estado === "Terminado"
+      ).length || 0;
+
+      console.log(
+  "ESTADOS TAREAS:",
+  tareasData?.map(
+    (item) => item.estado
+  )
+);
 
     const deuda =
       financiamientosData?.reduce(
@@ -147,7 +167,7 @@ function Dashboard() {
           (
             Number(item.monto_solicitado) -
             Number(item.cuotas_pagadas) *
-              Number(item.cuota_mensual)
+            Number(item.cuota_mensual)
           ),
         0
       ) || 0;
@@ -161,6 +181,9 @@ function Dashboard() {
     setServicios(totalServicios);
 
     setBancos(totalBancos || 0);
+    setPendientes(tareasPendientes);
+    setProceso(tareasProceso);
+    setTerminadas(tareasTerminadas);
     setTareas(totalTareas || 0);
     setAgenda(totalAgenda || 0);
 
@@ -215,13 +238,23 @@ function Dashboard() {
         </div>
 
         <div className="card">
-  <h3>🏦 Saldo Bancario</h3>
-  <p>{bancos}</p>
-</div>
+          <h3>🏦 Saldo Bancario</h3>
+          <p>{bancos}</p>
+        </div>
 
         <div className="card">
-          <h3>✅ Tareas</h3>
-          <p>{tareas}</p>
+          <h3>🟡 Pendientes</h3>
+          <p>{pendientes}</p>
+        </div>
+
+        <div className="card">
+          <h3>🔵 En Proceso</h3>
+          <p>{proceso}</p>
+        </div>
+
+        <div className="card">
+          <h3>✅ Terminadas</h3>
+          <p>{terminadas}</p>
         </div>
 
         <div className="card">
