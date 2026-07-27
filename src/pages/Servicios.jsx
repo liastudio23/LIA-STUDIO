@@ -117,10 +117,6 @@ function Servicios() {
     📊 Microsoft 365
   </option>
 
-  <option value="ChatGPT">
-    🤖 ChatGPT
-  </option>
-
   <option value="Envato Elements">
     🖼️ Envato Elements
   </option>
@@ -163,8 +159,8 @@ function Servicios() {
     💻 Software
   </option>
 
-  <option value="Internet">
-    🌐 Internet
+  <option value="Win">
+    🌐 win
   </option>
 
   <option value="Telefonía">
