@@ -34,7 +34,6 @@ function Servicios() {
     servicio,
     categoria,
     monto,
-    fecha_vencimiento: fechaVencimiento,
     estado,
     observaciones,
   },
@@ -77,6 +76,27 @@ function Servicios() {
 
     cargarServicios();
   };
+
+   const marcarComoPagado = async (id) => {
+  
+
+  const { data, error } = await supabase
+    .from("servicios")
+    .update({
+      estado: "Pagado",
+    })
+    .eq("id", id)
+    .select();
+
+
+ if (error) {
+  alert(error.message);
+  return;
+}
+
+
+cargarServicios();
+};
 
   return (
     <div>
@@ -279,18 +299,19 @@ function Servicios() {
                     24)
               );
 
-            let estadoAutomatico =
-              "🟢 Al día";
+            let estadoAutomatico;
 
-            if (diferenciaDias < 0) {
-              estadoAutomatico =
-                "🔴 Vencido";
-            } else if (
-              diferenciaDias <= 7
-            ) {
-              estadoAutomatico =
-                "🟡 Próximo a vencer";
-            }
+if (item.estado === "Pagado") {
+  estadoAutomatico = "✅ Pagado";
+} else {
+  estadoAutomatico = "🟢 Al día";
+
+  if (diferenciaDias < 0) {
+    estadoAutomatico = "🔴 Vencido";
+  } else if (diferenciaDias <= 7) {
+    estadoAutomatico = "🟡 Próximo a vencer";
+  }
+}
 
             return (
               <tr key={item.id}>
@@ -312,17 +333,42 @@ function Servicios() {
                   {estadoAutomatico}
                 </td>
 
-                <td>
-                  <button
-                    onClick={() =>
-                      eliminarServicio(
-                        item.id
-                      )
-                    }
-                  >
-                    🗑️
-                  </button>
-                </td>
+<td>
+  {item.estado !== "Pagado" && (
+    <button
+      onClick={() =>
+        marcarComoPagado(item.id)
+      }
+      style={{
+        marginRight: "5px",
+        background: "#16a34a",
+        color: "white",
+        border: "none",
+        padding: "5px 10px",
+        borderRadius: "5px",
+        cursor: "pointer",
+      }}
+    >
+      ✅ Pagado
+    </button>
+  )}
+
+  <button
+    onClick={() =>
+      eliminarServicio(item.id)
+    }
+    style={{
+      background: "#dc2626",
+      color: "white",
+      border: "none",
+      padding: "5px 10px",
+      borderRadius: "5px",
+      cursor: "pointer",
+    }}
+  >
+    🗑️
+  </button>
+</td>
               </tr>
             );
           })}
