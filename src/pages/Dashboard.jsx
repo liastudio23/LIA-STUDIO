@@ -78,7 +78,7 @@ function Dashboard() {
     const { data: serviciosData } =
       await supabase
         .from("servicios")
-        .select("monto");
+        .select("*");
 
     const { data: financiamientosData } =
       await supabase
@@ -109,11 +109,17 @@ function Dashboard() {
       ) || 0;
 
     const totalServicios =
-      serviciosData?.reduce(
-        (acc, item) =>
-          acc + Number(item.monto),
-        0
-      ) || 0;
+  serviciosData
+    ?.filter(
+      (item) =>
+        item.estado === "Pagado"
+    )
+    .reduce(
+      (acc, item) =>
+        acc + Number(item.monto),
+      0
+    ) || 0;
+
 
     const deuda =
       financiamientosData?.reduce(
