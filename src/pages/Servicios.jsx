@@ -29,11 +29,12 @@ function Servicios() {
   const guardarServicio = async () => {
     const { error } = await supabase
       .from("servicios")
-     .insert([
+.insert([
   {
     servicio,
     categoria,
     monto,
+    fecha_vencimiento: fechaVencimiento,
     estado,
     observaciones,
   },
