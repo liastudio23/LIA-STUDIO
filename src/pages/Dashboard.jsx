@@ -180,7 +180,7 @@ function Dashboard() {
         </div>
 
         <div className="card">
-          <h3>🧾 Servicios</h3>
+          <h3>🧾 Gastos fijos</h3>
           <p>S/ {servicios}</p>
         </div>
 

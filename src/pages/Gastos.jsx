@@ -144,13 +144,60 @@ console.log(
   <br />
   <br />
 
-  <input
-    type="text"
-    placeholder="Categoría"
-    value={categoria}
-    onChange={(e) => setCategoria(e.target.value)}
-  />
+  <select
+  value={categoria}
+  onChange={(e) =>
+    setCategoria(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione categoría
+  </option>
 
+  <option value="Operativo">
+    🚗 Operativo
+  </option>
+
+  <option value="Producción">
+    🎬 Producción
+  </option>
+
+  <option value="Logística">
+    📦 Logística
+  </option>
+
+  <option value="Alimentación">
+    🍽️ Alimentación
+  </option>
+
+  <option value="Transporte">
+    🚐 Transporte
+  </option>
+
+  <option value="Equipos">
+    🎥 Equipos
+  </option>
+
+  <option value="Marketing">
+    📢 Marketing
+  </option>
+
+  <option value="Oficina">
+    🏢 Oficina
+  </option>
+
+  <option value="Servicios">
+    ⚡ Servicios
+  </option>
+
+  <option value="Software">
+    💻 Software
+  </option>
+
+  <option value="Otros">
+    📦 Otros
+  </option>
+</select>
   <br />
   <br />
 
@@ -164,12 +211,44 @@ console.log(
   <br />
   <br />
 
-  <input
-    type="text"
-    placeholder="Tipo de operación"
-    value={tipoOperacion}
-    onChange={(e) => setTipoOperacion(e.target.value)}
-  />
+  <select
+  value={tipoOperacion}
+  onChange={(e) =>
+    setTipoOperacion(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione tipo de operación
+  </option>
+
+  <option value="Efectivo">
+    💵 Efectivo
+  </option>
+
+  <option value="Yape">
+    📱 Yape
+  </option>
+
+  <option value="Plin">
+    📲 Plin
+  </option>
+
+  <option value="Transferencia">
+    🏦 Transferencia
+  </option>
+
+  <option value="Tarjeta de Débito">
+    💳 Tarjeta de Débito
+  </option>
+
+  <option value="Tarjeta de Crédito">
+    💳 Tarjeta de Crédito
+  </option>
+
+  <option value="Otro">
+    📦 Otro
+  </option>
+</select>
 
   <br />
   <br />

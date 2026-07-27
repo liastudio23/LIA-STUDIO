@@ -12,6 +12,12 @@ function Navbar({ setPagina }) {
           📅 Agenda
         </li>
 
+        <li onClick={() => setPagina("tareas")}>
+          ✅ Tareas
+        </li>
+
+
+
         <li onClick={() => setPagina("clientes")}>
           👥 Clientes
         </li>
@@ -20,16 +26,15 @@ function Navbar({ setPagina }) {
           🎬 Proyectos
         </li>
 
-        <li onClick={() => setPagina("tareas")}>
-          ✅ Tareas
-        </li>
-
         <li onClick={() => setPagina("archivos")}>
           📁 Archivos
         </li>
 
+
+
+
         <li onClick={() => setPagina("pagos")}>
-          💰 Pagos
+          💰 Ingresos
         </li>
 
         <li onClick={() => setPagina("gastos")}>
@@ -40,29 +45,31 @@ function Navbar({ setPagina }) {
           💵 Pagos Personal
         </li>
 
+        <li onClick={() => setPagina("servicios")}>
+          🧾 Gastos fijos
+        </li>
+
         <li onClick={() => setPagina("bancos")}>
-          🏦 Bancos
+          🏦 Cuenta corriente
         </li>
 
         <li onClick={() => setPagina("financiamientos")}>
           💳 Financiamientos
         </li>
 
-        <li onClick={() => setPagina("servicios")}>
-          🧾 Servicios
+        <li onClick={() => setPagina("personal")}>
+          👥 Personal
         </li>
+
+         <li onClick={() => setPagina("costos")}>
+          🎥 Costos Producción
+       </li>
+
 
         <li onClick={() => setPagina("reportes")}>
           📄 Reportes
         </li>
 
-        <li onClick={() => setPagina("personal")}>
-          👥 Personal
-        </li>
-
-        <li onClick={() => setPagina("costos")}>
-          🎥 Costos Producción
-       </li>
 
       </ul>
     </div>
