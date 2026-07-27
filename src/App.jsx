@@ -17,6 +17,7 @@ import Financiamientos from "./pages/Financiamientos";
 import Servicios from "./pages/Servicios";
 import Reportes from "./pages/Reportes";
 import Personal from "./pages/Personal.jsx";
+import CostosProduccion from "./pages/CostosProduccion";
 
 import "./App.css";
 
@@ -61,7 +62,8 @@ function App() {
         {pagina === "reportes" && <Reportes />}
 
         {pagina === "personal" && <Personal />}
-        
+
+        {pagina === "costos" && <CostosProduccion />}
       </div>
     </div>
   );

@@ -60,6 +60,10 @@ function Navbar({ setPagina }) {
           👥 Personal
         </li>
 
+        <li onClick={() => setPagina("costos")}>
+          🎥 Costos Producción
+       </li>
+
       </ul>
     </div>
   );
