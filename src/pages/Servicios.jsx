@@ -5,7 +5,6 @@ function Servicios() {
   const [servicio, setServicio] = useState("");
   const [categoria, setCategoria] = useState("");
   const [monto, setMonto] = useState("");
-  const [fechaPago, setFechaPago] = useState("");
   const [fechaVencimiento, setFechaVencimiento] =
     useState("");
   const [estado, setEstado] = useState("");
@@ -55,7 +54,6 @@ function Servicios() {
     setServicio("");
     setCategoria("");
     setMonto("");
-    setFechaPago("");
     setFechaVencimiento("");
     setEstado("");
     setObservaciones("");
@@ -83,30 +81,108 @@ function Servicios() {
 
   return (
     <div>
-      <h1>🧾 Servicios</h1>
+    
+
+      <select
+  value={servicio}
+  onChange={(e) =>
+    setServicio(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione servicio
+  </option>
+
+  <option value="Luz">
+    💡 Luz
+  </option>
+
+  <option value="Agua">
+    🚿 Agua
+  </option>
+
+  <option value="Internet">
+    🌐 Internet
+  </option>
+
+  <option value="Telefonía">
+    📱 Telefonía
+  </option>
+
+  <option value="Adobe">
+    💻 Adobe
+  </option>
+
+  <option value="Microsoft 365">
+    📊 Microsoft 365
+  </option>
+
+  <option value="ChatGPT">
+    🤖 ChatGPT
+  </option>
+
+  <option value="Envato Elements">
+    🖼️ Envato Elements
+  </option>
+
+  <option value="Alquiler de oficina">
+    🏢 Alquiler de oficina
+  </option>
+
+  <option value="Hosting">
+    🖥️ Hosting
+  </option>
+
+  <option value="Dominio Web">
+    🌍 Dominio Web
+  </option>
+
+  <option value="Otros">
+    📦 Otros
+  </option>
+</select>
 
       <br />
-
-      <input
-        type="text"
-        placeholder="Servicio"
-        value={servicio}
-        onChange={(e) =>
-          setServicio(e.target.value)
-        }
-      />
-
-      <br />
       <br />
 
-      <input
-        type="text"
-        placeholder="Categoría"
-        value={categoria}
-        onChange={(e) =>
-          setCategoria(e.target.value)
-        }
-      />
+      <select
+  value={categoria}
+  onChange={(e) =>
+    setCategoria(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione categoría
+  </option>
+
+  <option value="Servicios Básicos">
+    ⚡ Servicios Básicos
+  </option>
+
+  <option value="Software">
+    💻 Software
+  </option>
+
+  <option value="Internet">
+    🌐 Internet
+  </option>
+
+  <option value="Telefonía">
+    📱 Telefonía
+  </option>
+
+  <option value="Hosting">
+    🖥️ Hosting
+  </option>
+
+  <option value="Suscripciones">
+    🔄 Suscripciones
+  </option>
+
+  <option value="Otros">
+    📦 Otros
+  </option>
+</select>
 
       <br />
       <br />
@@ -125,17 +201,6 @@ function Servicios() {
 
       <input
         type="date"
-        value={fechaPago}
-        onChange={(e) =>
-          setFechaPago(e.target.value)
-        }
-      />
-
-      <br />
-      <br />
-
-      <input
-        type="date"
         value={fechaVencimiento}
         onChange={(e) =>
           setFechaVencimiento(e.target.value)
@@ -145,14 +210,28 @@ function Servicios() {
       <br />
       <br />
 
-      <input
-        type="text"
-        placeholder="Estado"
-        value={estado}
-        onChange={(e) =>
-          setEstado(e.target.value)
-        }
-      />
+     <select
+  value={estado}
+  onChange={(e) =>
+    setEstado(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione estado
+  </option>
+
+  <option value="Pagado">
+    ✅ Pagado
+  </option>
+
+  <option value="Pendiente">
+    🟡 Pendiente
+  </option>
+
+  <option value="Vencido">
+    🔴 Vencido
+  </option>
+</select>
 
       <br />
       <br />
