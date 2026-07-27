@@ -36,13 +36,10 @@ function Dashboard() {
           head: true,
         });
 
-    const { count: totalBancos } =
-      await supabase
-        .from("bancos")
-        .select("*", {
-          count: "exact",
-          head: true,
-        });
+    const { data: bancosData } =
+  await supabase
+    .from("bancos")
+    .select("*");
 
     const { count: totalTareas } =
       await supabase
@@ -135,6 +132,13 @@ function Dashboard() {
       0
     ) || 0;
 
+    const totalBancos =
+  bancosData?.reduce(
+    (acc, item) =>
+      acc + Number(item.saldo_actual),
+    0
+  ) || 0;
+
 
     const deuda =
       financiamientosData?.reduce(
@@ -211,9 +215,9 @@ function Dashboard() {
         </div>
 
         <div className="card">
-          <h3>🏦 Bancos</h3>
-          <p>{bancos}</p>
-        </div>
+  <h3>🏦 Saldo Bancario</h3>
+  <p>{bancos}</p>
+</div>
 
         <div className="card">
           <h3>✅ Tareas</h3>
