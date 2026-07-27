@@ -72,8 +72,9 @@ function Dashboard() {
 
     const { data: personalData } =
       await supabase
-        .from("pagos_personal")
-        .select("monto");
+         .from("pagos_personal")
+         .select("monto, estado");
+
 
     const { data: serviciosData } =
       await supabase
@@ -101,12 +102,26 @@ function Dashboard() {
         0
       ) || 0;
 
+      console.log("PERSONAL:", personalData);
+      console.log(
+  "ESTADOS PERSONAL:",
+  personalData?.map(
+    (item) => item.estado
+  )
+);
+
     const totalPersonal =
-      personalData?.reduce(
-        (acc, item) =>
-          acc + Number(item.monto),
-        0
-      ) || 0;
+      personalData
+      ?.filter(
+      (item) =>
+        item.estado === "Pagado"
+      
+    )
+    .reduce(
+      (acc, item) =>
+        acc + Number(item.monto),
+      0
+    ) || 0;
 
     const totalServicios =
   serviciosData

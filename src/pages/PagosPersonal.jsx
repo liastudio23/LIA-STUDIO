@@ -4,6 +4,8 @@ import { supabase } from "../lib/supabase";
 function PagosPersonal() {
   const [proyectos, setProyectos] = useState([]);
   const [pagosPersonal, setPagosPersonal] = useState([]);
+  const [personal, setPersonal] =
+  useState([]);
 
   const [proyectoId, setProyectoId] = useState("");
   const [nombrePersonal, setNombrePersonal] = useState("");
@@ -22,19 +24,29 @@ function PagosPersonal() {
     setProyectos(data || []);
   };
 
-  const cargarPagosPersonal = async () => {
-    const { data } = await supabase
-      .from("pagos_personal")
-      .select("*")
-      .order("id", { ascending: false });
+  const cargarPersonal = async () =>{
+  const { data } = await supabase
+    .from("personal")
+    .select("*")
+    .order("nombre");
 
-    setPagosPersonal(data || []);
-  };
+  setPersonal(data || []);
+};
 
-  useEffect(() => {
-    cargarProyectos();
-    cargarPagosPersonal();
-  }, []);
+const cargarPagosPersonal = async () => {
+  const { data } = await supabase
+   .from("pagos_personal")
+    .select("*")
+    .order("id", { ascending: false });
+
+  setPagosPersonal(data || []);
+};
+
+ useEffect(() => {
+  cargarProyectos();
+  cargarPersonal();
+  cargarPagosPersonal();
+}, []);
 
   const guardarPagoPersonal = async () => {
     const { error } = await supabase
@@ -71,25 +83,41 @@ function PagosPersonal() {
   };
 
   const eliminarPagoPersonal = async (id) => {
-    const confirmar = window.confirm(
-      "¿Deseas eliminar este pago?"
-    );
+  const confirmar = window.confirm(
+    "¿Deseas eliminar este pago?"
+  );
 
-    if (!confirmar) return;
+  if (!confirmar) return;
 
-    const { error } = await supabase
-      .from("pagos_personal")
-      .delete()
-      .eq("id", id);
+  const { error } = await supabase
+    .from("pagos_personal")
+    .delete()
+    .eq("id", id);
 
-    if (error) {
-      console.log(error);
-      alert("Error al eliminar pago");
-      return;
-    }
+  if (error) {
+    console.log(error);
+    alert("Error al eliminar pago");
+    return;
+  }
 
-    cargarPagosPersonal();
-  };
+  cargarPagosPersonal();
+};
+
+const marcarComoPagado = async (id) => {
+  const { error } = await supabase
+    .from("pagos_personal")
+    .update({
+      estado: "Pagado",
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  cargarPagosPersonal();
+};
 
   return (
     <div>
@@ -118,14 +146,25 @@ function PagosPersonal() {
       <br />
       <br />
 
-      <input
-        type="text"
-        placeholder="Nombre del Personal"
-        value={nombrePersonal}
-        onChange={(e) =>
-          setNombrePersonal(e.target.value)
-        }
-      />
+     <select
+  value={nombrePersonal}
+  onChange={(e) =>
+    setNombrePersonal(e.target.value)
+  }
+>
+  <option value="">
+    Seleccione personal
+  </option>
+
+  {personal.map((item) => (
+    <option
+      key={item.id}
+      value={item.nombre}
+    >
+      {item.nombre}
+    </option>
+  ))}
+</select>
 
       <br />
       <br />
@@ -299,15 +338,34 @@ function PagosPersonal() {
   )}
 </td>
 
-              <td>
-                <button
-                  onClick={() =>
-                    eliminarPagoPersonal(pago.id)
-                  }
-                >
-                  🗑️
-                </button>
-              </td>
+<td>
+  {pago.estado !== "Pagado" && (
+    <button
+      onClick={() =>
+        marcarComoPagado(pago.id)
+      }
+      style={{
+        marginRight: "5px",
+        background: "#16a34a",
+        color: "white",
+        border: "none",
+        padding: "5px 10px",
+        borderRadius: "5px",
+        cursor: "pointer",
+      }}
+    >
+      ✅
+    </button>
+  )}
+
+  <button
+    onClick={() =>
+      eliminarPagoPersonal(pago.id)
+    }
+  >
+    🗑️
+  </button>
+</td>
             </tr>
           ))}
         </tbody>
