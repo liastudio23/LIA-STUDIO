@@ -61,13 +61,17 @@ function Navbar({ setPagina }) {
           👥 Personal
         </li>
 
-         <li onClick={() => setPagina("costos")}>
+        <li onClick={() => setPagina("costos")}>
           🎥 Costos Producción
-       </li>
+        </li>
 
 
         <li onClick={() => setPagina("reportes")}>
           📄 Reportes
+        </li>
+
+        <li onClick={() => setPagina("control_horas")}>
+          ⏱️ Control de Horas
         </li>
 
 
