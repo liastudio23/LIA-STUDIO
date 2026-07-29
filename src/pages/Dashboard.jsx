@@ -15,8 +15,12 @@ function Dashboard() {
   const [proceso, setProceso] = useState(0);
   const [terminadas, setTerminadas] = useState(0);
   const [agenda, setAgenda] = useState(0);
+
   const [deudaPendiente, setDeudaPendiente] =
     useState(0);
+
+  const [horasTrabajadas, setHorasTrabajadas] =
+    useState("0 h 0 min");
 
   useEffect(() => {
     cargarDatos();
@@ -76,6 +80,11 @@ function Dashboard() {
     const { data: serviciosData } =
       await supabase
         .from("servicios")
+        .select("*");
+
+    const { data: controlHorasData } =
+      await supabase
+        .from("control_horas")
         .select("*");
 
     const { data: financiamientosData } =
@@ -138,6 +147,23 @@ function Dashboard() {
           acc + Number(item.saldo_actual),
         0
       ) || 0;
+
+    const totalMinutosTrabajados =
+      controlHorasData?.reduce(
+        (acc, item) =>
+          acc + Number(item.minutos_acumulados || 0),
+        0
+      ) || 0;
+
+    const horas =
+      Math.floor(totalMinutosTrabajados / 60);
+
+    const minutos =
+      Math.round(totalMinutosTrabajados % 60);
+
+    const totalHorasTexto =
+      `${horas} h ${minutos} min`;
+
     const tareasPendientes =
       tareasData?.filter(
         (item) => item.estado === "Pendiente"
@@ -153,12 +179,12 @@ function Dashboard() {
         (item) => item.estado === "Terminado"
       ).length || 0;
 
-      console.log(
-  "ESTADOS TAREAS:",
-  tareasData?.map(
-    (item) => item.estado
-  )
-);
+    console.log(
+      "ESTADOS TAREAS:",
+      tareasData?.map(
+        (item) => item.estado
+      )
+    );
 
     const deuda =
       financiamientosData?.reduce(
@@ -181,10 +207,11 @@ function Dashboard() {
     setServicios(totalServicios);
 
     setBancos(totalBancos || 0);
+    setHorasTrabajadas(totalHorasTexto);
     setPendientes(tareasPendientes);
     setProceso(tareasProceso);
     setTerminadas(tareasTerminadas);
-    setTareas(totalTareas || 0);
+    setTareas(tareasData?.length || 0);
     setAgenda(totalAgenda || 0);
 
     setDeudaPendiente(deuda);
@@ -260,6 +287,11 @@ function Dashboard() {
         <div className="card">
           <h3>📅 Agenda</h3>
           <p>{agenda}</p>
+        </div>
+
+        <div className="card">
+          <h3>⏱️ Horas Trabajadas</h3>
+          <p>{horasTrabajadas}</p>
         </div>
 
         <div className="card">
