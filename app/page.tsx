@@ -2,57 +2,24 @@
 
 import { useState } from "react";
 import { supabase } from "./lib/supabase";
+
 export default function Home() {
     const [title, setTitle] = useState("");
     const [clientName, setClientName] = useState("");
-    const [clientEmail, setClientEmail] = useState("");
     const [message, setMessage] = useState("");
     const [expiresAt, setExpiresAt] = useState("");
-    const [files, setFiles] = useState<FileList | null>(null);
+    const [driveLink, setDriveLink] = useState("");
+    const [generatedLink, setGeneratedLink] = useState("");
+    const [referenceCode, setReferenceCode] = useState("");
 
-    const crearTransferencia = async () => {
+    const generarEnlace = async () => {
         const token = crypto.randomUUID();
-        if (files && files.length > 0) {
-  const formData = new FormData();
-
-  formData.append("file", files[0]);
-
-  const uploadResponse = await fetch(
-    "/api/drive/upload",
-    {
-      method: "POST",
-      body: formData,
-    }
-  );
-
-  const uploadData = await uploadResponse.json();
-
-  console.log("UPLOAD:", uploadData);
-
-  alert(
-    `Archivo recibido: ${uploadData.fileName}`
-  );
-}
-
-        
-        const folderResponse = await fetch("/api/drive/create-transfer", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                clientName,
-                title,
-            }),
-        });
-
-        const folderData = await folderResponse.json();
-
-        console.log("Drive:", folderData);
-
-
-        console.log("Archivos seleccionados:", files);
-        alert(`Archivos seleccionados: ${files?.length || 0}`);
+        const shortCode =
+            "LIA-" +
+            crypto.randomUUID()
+                .replace(/-/g, "")
+                .slice(0, 8)
+                .toUpperCase();
 
         const { error } = await supabase
             .from("transfers")
@@ -60,45 +27,43 @@ export default function Home() {
                 {
                     title,
                     client_name: clientName,
-                    client_email: clientEmail,
                     message,
                     public_token: token,
-                    expires_at: expiresAt,
+                    expires_at: expiresAt || null,
+                    drive_link: driveLink,
                 },
             ]);
 
         if (error) {
             console.error(error);
-            alert("Error al crear transferencia");
+            alert("Error al crear la entrega");
             return;
         }
 
-        alert("Transferencia creada correctamente");
-
-        setTitle("");
-        setClientName("");
-        setClientEmail("");
-        setMessage("");
-        setExpiresAt("");
+        const link = `${window.location.origin}/download/${token}`;
+        setGeneratedLink(link);
+        setReferenceCode(shortCode);
     };
+
     return (
         <div
             style={{
                 minHeight: "100vh",
                 backgroundColor: "#000",
                 textAlign: "center",
-                paddingTop: "60px",
+                paddingTop: "40px",
             }}
         >
             <img
                 src="/logo-lia.png"
-                alt="LIA Studios"
+                alt="LIA Studio"
                 style={{
-                    width: "250px",
+                    width: "320px",
                     display: "block",
                     margin: "0 auto 20px auto",
+                    
                 }}
-            />
+            ></img>
 
             <h1
                 style={{
@@ -107,39 +72,27 @@ export default function Home() {
                     fontWeight: "bold",
                 }}
             >
-
                 LIA Client Portal
             </h1>
 
             <p
                 style={{
-                    color: "white",
-                    fontSize: "18px",
+                    color: "#ffffff",
+                    marginBottom: "20px",
                 }}
             >
-                Acceso seguro a archivos, entregables y documentación.
+                Acceso seguro a archivos y entregables
             </p>
 
             <div
                 style={{
-                    backgroundColor: "white",
+                    backgroundColor: "#ffffff",
                     maxWidth: "600px",
-                    margin: "30px auto",
-                    padding: "20px",
-                    borderRadius: "10px",
+                    margin: "0 auto",
+                    padding: "30px",
+                    borderRadius: "12px",
                 }}
             >
-                <h2
-                    style={{
-                        color: "#000",
-                        marginBottom: "20px",
-                        fontSize: "24px",
-                        fontWeight: "bold",
-                    }}
-                >
-                    Crear Nueva Entrega
-                </h2>
-
                 <input
                     type="text"
                     placeholder="Título"
@@ -147,11 +100,13 @@ export default function Home() {
                     onChange={(e) => setTitle(e.target.value)}
                     style={{
                         width: "100%",
-                        padding: "14px",
-                        marginBottom: "10px",
+                        padding: "12px",
+                        marginBottom: "15px",
                         color: "#000",
                         backgroundColor: "#fff",
-                        border: "1px solid #ccc",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "8px",
+                        outline: "none",
                     }}
                 />
 
@@ -162,81 +117,155 @@ export default function Home() {
                     onChange={(e) => setClientName(e.target.value)}
                     style={{
                         width: "100%",
-                        padding: "14px",
-                        marginBottom: "10px",
+                        minHeight: "50px",
+                        padding: "12px",
+                        marginBottom: "15px",
                         color: "#000",
                         backgroundColor: "#fff",
-                        border: "1px solid #ccc",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "8px",
+                        resize: "vertical",
                     }}
                 />
 
-                <input
-                    type="email"
-                    placeholder="Correo"
-                    value={clientEmail}
-                    onChange={(e) => setClientEmail(e.target.value)}
-                    style={{
-                        width: "100%",
-                        padding: "14px",
-                        marginBottom: "10px",
-                        color: "#000",
-                        backgroundColor: "#fff",
-                        border: "1px solid #ccc",
-                    }}
-                />
                 <textarea
                     placeholder="Mensaje"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     style={{
                         width: "100%",
-                        padding: "14px",
-                        marginBottom: "10px",
+                        minHeight: "50px",
+                        padding: "12px",
+                        marginBottom: "15px",
                         color: "#000",
                         backgroundColor: "#fff",
-                        border: "1px solid #ccc",
-                        minHeight: "100px",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "8px",
+                        resize: "vertical",
                     }}
                 />
+
                 <input
                     type="date"
                     value={expiresAt}
                     onChange={(e) => setExpiresAt(e.target.value)}
                     style={{
                         width: "100%",
-                        padding: "14px",
-                        marginBottom: "10px",
+                        minHeight: "50px",
+                        padding: "12px",
+                        marginBottom: "15px",
                         color: "#000",
                         backgroundColor: "#fff",
-                        border: "1px solid #ccc",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "8px",
+                        resize: "vertical",
                     }}
                 />
+
                 <input
-                    type="file"
-                    multiple
-                    onChange={(e) => setFiles(e.target.files)}
+                    type="text"
+                    placeholder="Enlace Google Drive"
+                    value={driveLink}
+                    onChange={(e) => setDriveLink(e.target.value)}
                     style={{
                         width: "100%",
+                        minHeight: "50px",
                         padding: "12px",
                         marginBottom: "10px",
                         color: "#000",
                         backgroundColor: "#fff",
-                        border: "1px solid #ccc",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "8px",
+                        resize: "vertical",
                     }}
                 />
 
                 <button
-                    onClick={crearTransferencia}
+                    onClick={generarEnlace}
                     style={{
-                        backgroundColor: "#facc15",
-                        border: "none",
-                        padding: "12px 20px",
-                        cursor: "pointer",
-                        fontWeight: "bold",
+                        width: "100%",
+                        minHeight: "50px",
+                        padding: "12px",
+                        marginBottom: "15px",
+                        color: "#000",
+                        backgroundColor: "#fff",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "8px",
+                        resize: "vertical",
                     }}
                 >
-                    Crear Transferencia
+                    Generar Enlace
                 </button>
+
+                {generatedLink && (
+                    <div
+                        style={{
+                            marginTop: "20px",
+                            backgroundColor: "#111827",
+                            padding: "20px",
+                            borderRadius: "10px",
+                        }}
+                    >
+                        <p
+                            style={{
+                                color: "#facc15",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            ✅ Enlace generado
+                        </p>
+
+                        <div
+                            style={{
+                                color: "#ffffff",
+                                marginTop: "10px",
+                                fontSize: "20px",
+                                fontWeight: "bold",
+                                letterSpacing: "1px",
+                            }}
+                        >
+                            {referenceCode}
+                        </div>
+                        <div
+  style={{
+    marginTop: "15px",
+  }}
+>
+  <button
+    onClick={() =>
+      navigator.clipboard.writeText(generatedLink)
+    }
+    style={{
+      backgroundColor: "#facc15",
+      color: "#000",
+      border: "none",
+      padding: "10px 16px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+      marginRight: "10px",
+    }}
+  >
+    Copiar enlace
+  </button>
+
+  <button
+    onClick={() => window.open(generatedLink, "_blank")}
+    style={{
+      backgroundColor: "#ffffff",
+      color: "#000",
+      border: "none",
+      padding: "10px 16px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    Ver entrega
+  </button>
+</div>
+                    </div>
+                )}
             </div>
         </div>
     );
