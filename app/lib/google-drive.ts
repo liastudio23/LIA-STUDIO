@@ -1,3 +1,5 @@
+import fs from "fs";
+import mime from "mime-types";
 import { google } from "googleapis";
 import path from "path";
 
@@ -19,11 +21,33 @@ export async function createFolder(
   name: string,
   parentFolderId: string
 ) {
+
+  
   const response = await drive.files.create({
     requestBody: {
       name,
       mimeType: "application/vnd.google-apps.folder",
       parents: [parentFolderId],
+    },
+    fields: "id,name",
+  });
+
+  return response.data;
+}
+export async function uploadFile(
+  filePath: string,
+  fileName: string,
+  folderId: string
+) {
+  const response = await drive.files.create({
+    requestBody: {
+      name: fileName,
+      parents: [folderId],
+    },
+    media: {
+      mimeType:
+        mime.lookup(fileName) || "application/octet-stream",
+      body: fs.createReadStream(filePath),
     },
     fields: "id,name",
   });

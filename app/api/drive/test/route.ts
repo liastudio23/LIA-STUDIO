@@ -3,14 +3,20 @@ import { createFolder } from "@/app/lib/google-drive";
 
 export async function GET() {
   try {
-    const folder = await createFolder(
-      "TEST_FOLDER",
+    const clienteFolder = await createFolder(
+      "Cliente Demo",
       "14mmifnrSkdMuuZduHOBm7ejMXyRspLUv"
+    );
+
+    const entregaFolder = await createFolder(
+      "Video Final",
+      clienteFolder.id!
     );
 
     return NextResponse.json({
       success: true,
-      folder,
+      clienteFolder,
+      entregaFolder,
     });
   } catch (error) {
     console.error(error);
