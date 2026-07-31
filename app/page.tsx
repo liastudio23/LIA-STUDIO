@@ -12,6 +12,45 @@ export default function Home() {
 
     const crearTransferencia = async () => {
         const token = crypto.randomUUID();
+        if (files && files.length > 0) {
+  const formData = new FormData();
+
+  formData.append("file", files[0]);
+
+  const uploadResponse = await fetch(
+    "/api/drive/upload",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const uploadData = await uploadResponse.json();
+
+  console.log("UPLOAD:", uploadData);
+
+  alert(
+    `Archivo recibido: ${uploadData.fileName}`
+  );
+}
+
+        
+        const folderResponse = await fetch("/api/drive/create-transfer", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                clientName,
+                title,
+            }),
+        });
+
+        const folderData = await folderResponse.json();
+
+        console.log("Drive:", folderData);
+
+
         console.log("Archivos seleccionados:", files);
         alert(`Archivos seleccionados: ${files?.length || 0}`);
 
