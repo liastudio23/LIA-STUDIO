@@ -145,8 +145,8 @@ cargarServicios();
     🏢 Alquiler de oficina
   </option>
 
-  <option value="Hosting">
-    🖥️ Hosting
+  <option value="Equipos">
+    🖥️ Equipos
   </option>
 
   <option value="Dominio Web">
@@ -187,8 +187,8 @@ cargarServicios();
     📱 Telefonía
   </option>
 
-  <option value="Hosting">
-    🖥️ Hosting
+  <option value="Equipos">
+    🖥️ Equipos
   </option>
 
   <option value="Suscripciones">
