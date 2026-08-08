@@ -35,19 +35,44 @@ function Archivos() {
     cargarArchivos();
   }, []);
 
-  const guardarArchivo = async () => {
-    const { error } = await supabase
-      .from("archivos")
-      .insert([
-        {
-          proyecto_id: proyectoId,
-          disco,
-          carpeta,
-          estado,
-          respaldo,
-          observaciones,
-        }
-      ]);
+ const guardarArchivo = async () => {
+
+  if (!proyectoId) {
+    alert("Seleccione un proyecto");
+    return;
+  }
+console.log("Proyecto ID:", proyectoId);
+  const { error } = await supabase
+    .from("archivos")
+    .insert([
+      {
+        
+        proyecto_id: Number(proyectoId),
+        disco,
+        carpeta,
+        estado,
+        respaldo,
+        observaciones,
+      },
+    ]);
+
+  if (error) {
+    console.log(error);
+    alert("Error al guardar archivo");
+    return;
+  }
+
+  alert("Archivo guardado correctamente");
+
+  cargarArchivos();
+
+  setProyectoId("");
+  setDisco("");
+  setCarpeta("");
+  setEstado("Activo");
+  setRespaldo("");
+  setObservaciones("");
+
 
     if (error) {
       console.log(error);
@@ -57,14 +82,16 @@ function Archivos() {
 
     alert("Archivo guardado correctamente");
 
-cargarArchivos();
-
-setProyectoId("");
+    setProyectoId("");
 setDisco("");
 setCarpeta("");
 setEstado("Activo");
 setRespaldo("");
 setObservaciones("");
+
+alert("Archivo guardado correctamente");
+
+cargarArchivos();
   };
 
   const eliminarArchivo = async (id) => {
