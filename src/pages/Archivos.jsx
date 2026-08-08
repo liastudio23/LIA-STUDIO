@@ -7,10 +7,8 @@ function Archivos() {
 
   const [proyectoId, setProyectoId] = useState("");
   const [disco, setDisco] = useState("");
-  const [rutaRaw, setRutaRaw] = useState("");
-  const [rutaEdicion, setRutaEdicion] = useState("");
-  const [rutaExportacion, setRutaExportacion] = useState("");
-  const [rutaMaster, setRutaMaster] = useState("");
+  const [carpeta, setCarpeta] = useState("");
+  const [estado, setEstado] = useState("Activo");
   const [respaldo, setRespaldo] = useState("");
   const [observaciones, setObservaciones] = useState("");
 
@@ -44,13 +42,11 @@ function Archivos() {
         {
           proyecto_id: proyectoId,
           disco,
-          ruta_raw: rutaRaw,
-          ruta_edicion: rutaEdicion,
-          ruta_exportacion: rutaExportacion,
-          ruta_master: rutaMaster,
+          carpeta,
+          estado,
           respaldo,
           observaciones,
-        },
+        }
       ]);
 
     if (error) {
@@ -131,54 +127,24 @@ function Archivos() {
           setDisco(e.target.value)
         }
       />
-
-      <br />
-      <br />
-
       <input
         type="text"
-        placeholder="Ruta RAW"
-        value={rutaRaw}
+        placeholder="Carpeta"
+        value={carpeta}
         onChange={(e) =>
-          setRutaRaw(e.target.value)
+          setCarpeta(e.target.value)
         }
       />
-
-      <br />
-      <br />
-
-      <input
-        type="text"
-        placeholder="Ruta Edición"
-        value={rutaEdicion}
+      <select
+        value={estado}
         onChange={(e) =>
-          setRutaEdicion(e.target.value)
+          setEstado(e.target.value)
         }
-      />
-
-      <br />
-      <br />
-
-      <input
-        type="text"
-        placeholder="Ruta Exportación"
-        value={rutaExportacion}
-        onChange={(e) =>
-          setRutaExportacion(e.target.value)
-        }
-      />
-
-      <br />
-      <br />
-
-      <input
-        type="text"
-        placeholder="Ruta Master"
-        value={rutaMaster}
-        onChange={(e) =>
-          setRutaMaster(e.target.value)
-        }
-      />
+      >
+        <option value="Activo">Activo</option>
+        <option value="Finalizado">Finalizado</option>
+        <option value="Archivado">Archivado</option>
+      </select>
 
       <br />
       <br />
@@ -219,8 +185,8 @@ function Archivos() {
           <tr>
             <th>Proyecto</th>
             <th>Disco</th>
-            <th>RAW</th>
-            <th>Master</th>
+            <th>Carpeta</th>
+            <th>Estado</th>
             <th>Respaldo</th>
             <th>Acciones</th>
           </tr>
@@ -240,8 +206,8 @@ function Archivos() {
               </td>
 
               <td>{archivo.disco}</td>
-              <td>{archivo.ruta_raw}</td>
-              <td>{archivo.ruta_master}</td>
+              <td>{archivo.carpeta}</td>
+              <td>{archivo.estado}</td>
               <td>{archivo.respaldo}</td>
 
               <td>
