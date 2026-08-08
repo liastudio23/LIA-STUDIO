@@ -57,16 +57,14 @@ function Archivos() {
 
     alert("Archivo guardado correctamente");
 
-    cargarArchivos();
+cargarArchivos();
 
-    setProyectoId("");
-    setDisco("");
-    setRutaRaw("");
-    setRutaEdicion("");
-    setRutaExportacion("");
-    setRutaMaster("");
-    setRespaldo("");
-    setObservaciones("");
+setProyectoId("");
+setDisco("");
+setCarpeta("");
+setEstado("Activo");
+setRespaldo("");
+setObservaciones("");
   };
 
   const eliminarArchivo = async (id) => {
